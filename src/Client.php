@@ -10,4 +10,9 @@ class Client
     {
         return 'Foo Transaction';
     }
+
+    public function packageUpdated(): string
+    {
+        return 'package updated';
+    }
 }
