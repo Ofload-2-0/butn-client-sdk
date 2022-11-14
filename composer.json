@@ -1,0 +1,22 @@
+{
+    "name": "ofload/butn-client",
+    "description": "Create a sdk for butn",
+    "type": "library",
+    "license": "proprietary",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ofload\\ButnClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Basheer Ahmed",
+            "email": "basheer.ahmed@ofload.com"
+        }
+    ]
+}
