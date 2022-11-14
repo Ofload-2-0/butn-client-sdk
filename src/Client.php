@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ofload\ButnClient;
+namespace Ofload\Butn;
 
 class Client
 {

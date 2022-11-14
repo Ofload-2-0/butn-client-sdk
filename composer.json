@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Ofload\\ButnClient\\": "src/"
+            "Ofload\\Butn\\": "src/"
         }
     },
     "authors": [
