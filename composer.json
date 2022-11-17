@@ -3,7 +3,7 @@
     "description": "Create a sdk for butn",
     "type": "library",
     "license": "proprietary",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "php": ">=8.1",
