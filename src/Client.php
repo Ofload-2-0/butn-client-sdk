@@ -18,7 +18,7 @@ class Client
     public function __construct(
         private readonly string $oauthToken,
         private readonly GuzzleHttpClient $httpClient,
-        private string $mode = ApplicationConstants::PRODUCTION_APPLICATION_MODE
+        private string $mode = ApplicationConstants::SANDBOX_APPLICATION_MODE
     ) {
     }
 
@@ -76,9 +76,9 @@ class Client
         }
     }
 
-    public function enableSandboxMode(): static
+    public function enableProductionMode(): static
     {
-        $this->mode = ApplicationConstants::SANDBOX_APPLICATION_MODE;
+        $this->mode = ApplicationConstants::PRODUCTION_APPLICATION_MODE;
 
         return $this;
     }
