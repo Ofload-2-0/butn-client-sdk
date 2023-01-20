@@ -90,12 +90,12 @@ class TransactionDTO implements JsonSerializable
         return $this;
     }
 
-    public function getFactorFaceValue(): int
+    public function getFactorFaceValue(): float
     {
         return $this->factorFaceValue;
     }
 
-    public function setFactorFaceValue(int $factorFaceValue): TransactionDTO
+    public function setFactorFaceValue(float $factorFaceValue): TransactionDTO
     {
         $this->factorFaceValue = $factorFaceValue;
 
