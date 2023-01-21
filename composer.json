@@ -1,5 +1,4 @@
 {
-    "version": "1.1",
     "name": "ofload/butn-client",
     "description": "Create a sdk for butn",
     "type": "library",
