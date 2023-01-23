@@ -14,7 +14,7 @@ class TransactionDTO implements JsonSerializable
     private string $borrowerExternalId;
     private string $butnProductType = ApplicationConstants::BUTTON_PAY;
     private string $debtorEmail;
-    private float $factorFaceValue;
+    private string $factorFaceValue;
     private string $potBase64BinaryStream;
     private ?string $dueDate = null;
     private ?string $potReference = null;
@@ -95,7 +95,7 @@ class TransactionDTO implements JsonSerializable
         return $this->factorFaceValue;
     }
 
-    public function setFactorFaceValue(float $factorFaceValue): TransactionDTO
+    public function setFactorFaceValue(string $factorFaceValue): TransactionDTO
     {
         $this->factorFaceValue = $factorFaceValue;
 
