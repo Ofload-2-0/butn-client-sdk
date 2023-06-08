@@ -20,4 +20,6 @@ final class ApplicationConstants
     const TRANSACTION_OPTIN_V1_URI = '/services/apexrest/v1/optIn/factor/transaction';
     const JWT_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     const BUTTON_PAY = 'Butn Pay';
+    const BUTN_X_UNDISCLOSED = 'Butn X Undisclosed';
+    const REGISTER_USER_URI = '/services/apexrest/v2/borrower/register';
 }
