@@ -9,6 +9,7 @@ use Ofload\Butn\Client as OfloadButnClient;
 use GuzzleHttp\Client as HttpClient;
 use Ofload\Butn\DTO\AccessTokenDTO;
 use Ofload\Butn\DTO\TransactionDTO;
+use Ofload\Butn\DTO\UserDTO;
 use Ofload\Butn\Exceptions\ButnServerException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -88,6 +89,29 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setTransactionId($transactionId);
 
         $this->createButnClient()->createTransaction($transactionDto, $accessTokenDto);
+    }
+
+    public function testShouldItShouldRegisterUser(): void
+    {
+        $redirectUri = 'redirect-uri';
+        $borrowerPayloadId = 'borrower-payload';
+        $accessTokenDto = (new AccessTokenDTO())
+            ->fromArray(self::ACCESS_TOKEN_DATA);
+        $userDTO = (new UserDTO())
+            ->setAggregatorId('foo')
+            ->setBorrowerExternalId('foo')
+            ->setAbn('foo')
+            ->setProductType('bar');
+
+        $this->createSuccessResponseFrom([
+            'redirectUri' => $redirectUri,
+            'borrowerPayloadId' => $borrowerPayloadId
+        ]);
+
+        $response = $this->createButnClient()->registerUser($userDTO, $accessTokenDto);
+
+        $this->assertEquals($redirectUri, $response->getRedirectUri());
+        $this->assertEquals($borrowerPayloadId, $response->getBorrowerPayloadId());
     }
 
     private function createButnClient(): OfloadButnClient

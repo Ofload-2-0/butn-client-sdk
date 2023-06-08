@@ -8,6 +8,9 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
+use Ofload\Butn\Actions\RegisterUserAction;
+use Ofload\Butn\DTO\UserDTO;
+use Ofload\Butn\DTO\UserResponseDTO;
 use Ofload\Butn\Exceptions\ButnClientException;
 use Ofload\Butn\Exceptions\ButnServerException;
 use Ofload\Butn\DTO\AccessTokenDTO;
@@ -74,6 +77,19 @@ class Client
         } catch (ClientException $exception) {
             $this->throwButnClientException($exception);
         }
+    }
+
+    public function registerUser(UserDTO $userDTO, ?AccessTokenDTO $accessTokenDTO = null): UserResponseDTO
+    {
+        if (is_null($accessTokenDTO)) {
+            $accessTokenDTO = $this->getAccessToken();
+        }
+
+        return (new RegisterUserAction(
+                $this->httpClient,
+                $accessTokenDTO,
+                $userDTO
+        ))->execute();
     }
 
     public function enableProductionMode(): static
