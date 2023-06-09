@@ -79,6 +79,9 @@ class Client
         }
     }
 
+    /**
+     * @throws ButnServerException
+     */
     public function registerUser(UserDTO $userDTO, ?AccessTokenDTO $accessTokenDTO = null): UserResponseDTO
     {
         if (is_null($accessTokenDTO)) {
