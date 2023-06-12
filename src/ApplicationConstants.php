@@ -15,11 +15,21 @@ final class ApplicationConstants
     const SANDBOX_APPLICATION_MODE = 'sandbox';
 
     // common
-    const VERSION = 'v1';
+    const VERSION_1 = 'v1';
+    const VERSION_2 = 'v2';
+    const VERSION_3 = 'v3';
+    const VERSION_4 = 'v4';
+    const VERSION_5 = 'v5';
+
     const TOKEN_URI = '/services/oauth2/token';
     const TRANSACTION_OPTIN_V1_URI = '/services/apexrest/v1/optIn/factor/transaction';
     const JWT_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     const BUTTON_PAY = 'Butn Pay';
     const BUTN_X_UNDISCLOSED = 'Butn X Undisclosed';
-    const REGISTER_USER_URI = '/services/apexrest/v2/borrower/register';
+    const REGISTER_USER_URI = '/services/apexrest/{version}/borrower/register';
+
+    public static function buildRegisterUserUri(string $version = self::VERSION_5): string
+    {
+        return str_replace('{version}', $version, self::REGISTER_USER_URI);
+    }
 }

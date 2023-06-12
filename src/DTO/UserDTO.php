@@ -22,6 +22,8 @@ class UserDTO implements JsonSerializable
     private ?string $postCode = null;
     private ?string $country = null;
     private ?string $potExtension = null;
+    private ?string $redirectUri = null;
+    private ?BankAccountDTO $bankAccount = null;
 
     public function getStreet(): ?string
     {
@@ -198,6 +200,18 @@ class UserDTO implements JsonSerializable
         return $this;
     }
 
+    public function getRedirectUri(): ?string
+    {
+        return $this->redirectUri;
+    }
+
+    public function setRedirectUri(?string $uri): UserDTO
+    {
+        $this->redirectUri = $uri;
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         $data = [
@@ -216,6 +230,8 @@ class UserDTO implements JsonSerializable
             'email' => $this->getEmail(),
             'phone' => $this->getPhone(),
             'potExt' => $this->getPotExtension(),
+            'redirectUri' => $this->getRedirectUri(),
+            'directDebitAccount' => $this->bankAccount?->jsonSerialize() ?? []
         ];
 
         foreach ($data as $key => $value) {

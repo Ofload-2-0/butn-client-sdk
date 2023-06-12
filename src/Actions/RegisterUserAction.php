@@ -26,7 +26,7 @@ class RegisterUserAction extends BaseAction
     {
         try {
             $response = $this->httpClient->post(
-                $this->accessToken->getInstanceUrl() . ApplicationConstants::REGISTER_USER_URI,
+                $this->accessToken->getInstanceUrl() . ApplicationConstants::buildRegisterUserUri(),
                 [
                     RequestOptions::HEADERS => [
                         'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
