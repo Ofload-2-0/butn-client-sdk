@@ -212,6 +212,18 @@ class UserDTO implements JsonSerializable
         return $this;
     }
 
+    public function getBankDetails(): ?string
+    {
+        return $this->redirectUri;
+    }
+
+    public function setBankDetails(?BankAccountDTO $bankAccountDTO): UserDTO
+    {
+        $this->bankAccount = $bankAccountDTO;
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         $data = [
