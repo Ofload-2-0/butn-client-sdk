@@ -27,9 +27,15 @@ final class ApplicationConstants
     const BUTTON_PAY = 'Butn Pay';
     const BUTN_X_UNDISCLOSED = 'Butn X Undisclosed';
     const REGISTER_USER_URI = '/services/apexrest/{version}/borrower/register';
+    const CHECK_USER_STATUS_URI = '/services/apexrest/{version}/borrower/status/';
 
     public static function buildRegisterUserUri(string $version = self::VERSION_5): string
     {
         return str_replace('{version}', $version, self::REGISTER_USER_URI);
+    }
+
+    public static function buildCheckUserStatusUri(string $version = self::VERSION_3): string
+    {
+        return str_replace('{version}', $version, self::CHECK_USER_STATUS_URI);
     }
 }
