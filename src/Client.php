@@ -8,9 +8,11 @@ use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
+use Ofload\Butn\Actions\CheckBorrowerStatusAction;
 use Ofload\Butn\Actions\RegisterUserAction;
 use Ofload\Butn\DTO\UserDTO;
 use Ofload\Butn\DTO\UserResponseDTO;
+use Ofload\Butn\DTO\UserStatusDTO;
 use Ofload\Butn\Exceptions\ButnClientException;
 use Ofload\Butn\Exceptions\ButnServerException;
 use Ofload\Butn\DTO\AccessTokenDTO;
@@ -92,6 +94,22 @@ class Client
                 $this->httpClient,
                 $accessTokenDTO,
                 $userDTO
+        ))->execute();
+    }
+
+    /**
+     * @throws ButnServerException
+     */
+    public function checkBorrowerStatus(UserStatusDTO $userStatusDTO, ?AccessTokenDTO $accessTokenDTO = null): UserStatusDTO
+    {
+        if (is_null($accessTokenDTO)) {
+            $accessTokenDTO = $this->getAccessToken();
+        }
+
+        return (new CheckBorrowerStatusAction(
+            $this->httpClient,
+            $accessTokenDTO,
+            $userStatusDTO
         ))->execute();
     }
 

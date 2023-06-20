@@ -43,7 +43,7 @@ class BankAccountDTO implements JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'accountName' => $this->getAccountName(),
