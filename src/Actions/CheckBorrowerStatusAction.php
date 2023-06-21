@@ -23,14 +23,16 @@ class CheckBorrowerStatusAction extends BaseAction
 
     public function execute(): UserStatusDTO
     {
+        $url = $this->accessToken->getInstanceUrl() . ApplicationConstants::buildCheckUserStatusUri();
+        $queryParameters = http_build_query($this->userStatusDTO->jsonSerialize());
+
         try {
-            $response = $this->httpClient->post(
-                $this->accessToken->getInstanceUrl() . ApplicationConstants::buildCheckUserStatusUri(),
+            $response = $this->httpClient->get(
+                sprintf('%s?%s', $url, $queryParameters),
                 [
                     RequestOptions::HEADERS => [
                         'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
-                    ],
-                    RequestOptions::JSON => $this->userStatusDTO->jsonSerialize()
+                    ]
                 ]
             );
 

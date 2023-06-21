@@ -10,6 +10,7 @@ use GuzzleHttp\Client as HttpClient;
 use Ofload\Butn\DTO\AccessTokenDTO;
 use Ofload\Butn\DTO\TransactionDTO;
 use Ofload\Butn\DTO\UserDTO;
+use Ofload\Butn\DTO\UserStatusDTO;
 use Ofload\Butn\Exceptions\ButnServerException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -114,6 +115,31 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($borrowerPayloadId, $response->getBorrowerPayloadId());
     }
 
+    public function testItShouldGetBorrowerDetails(): void
+    {
+        $externalBorrowerID = 'foo-bar';
+        $accessTokenDto = (new AccessTokenDTO())
+            ->fromArray(self::ACCESS_TOKEN_DATA);
+        $userStatusDTO = (new UserStatusDTO())
+            ->setAggregatorId('test')
+            ->setBorrowerExternalId($externalBorrowerID);
+
+        $this->createSuccessResponseFrom([
+            'description' => 'foo',
+            'code' => 'bar',
+            'updated' => 'test',
+            'fundingLimit' => 111,
+            'availableFunding' => 111,
+        ]);
+
+        $response = $this->createButnClient()->checkBorrowerStatus($userStatusDTO, $accessTokenDto);
+
+        $this->assertNotEmpty($response->getCode());
+        $this->assertNotEmpty($response->getDescription());
+        $this->assertNotEmpty($response->getFundingLimit());
+        $this->assertNotEmpty($response->getAvailableFunding());
+    }
+
     private function createButnClient(): OfloadButnClient
     {
         return new OfloadButnClient(self::OAUTH_TOKEN, $this->httpClient);
@@ -146,8 +172,12 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->method('getBody')
             ->willReturn($stream);
 
-        $this->httpClient->expects($this->atLeastOnce())
+        $this->httpClient->expects($this->any())
             ->method('post')
+            ->willReturn($response);
+
+        $this->httpClient->expects($this->any())
+            ->method('get')
             ->willReturn($response);
 
         return $response;
