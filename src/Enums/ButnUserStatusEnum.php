@@ -2,7 +2,7 @@
 
 namespace Ofload\Butn\Enums;
 
-enum ButnStatusEnum: string
+enum ButnUserStatusEnum: string
 {
     case PENDING = 'pending';
     case PENDING_LOGIN_CREATED = 'Pending (Login Created)';

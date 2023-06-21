@@ -96,8 +96,8 @@ class UserStatusDTO implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'aggregatorId' => $this->getAggregatorId(),
-            'borrowerExternalId' => $this->getBorrowerExternalId(),
+            'aggregatorID' => $this->getAggregatorId(),
+            'borrowerExternalID' => $this->getBorrowerExternalId(),
         ];
     }
 
