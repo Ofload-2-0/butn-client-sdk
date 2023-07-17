@@ -28,6 +28,7 @@ final class ApplicationConstants
     const BUTN_X_UNDISCLOSED = 'Butn X Undisclosed';
     const REGISTER_USER_URI = '/services/apexrest/{version}/borrower/register';
     const CHECK_USER_STATUS_URI = '/services/apexrest/{version}/borrower/status/';
+    const CHECK_TRANSACTION_STATUS_URI = '/services/apexrest/{version}/factor/transaction/status/';
 
     public static function buildRegisterUserUri(string $version = self::VERSION_5): string
     {
@@ -37,5 +38,10 @@ final class ApplicationConstants
     public static function buildCheckUserStatusUri(string $version = self::VERSION_3): string
     {
         return str_replace('{version}', $version, self::CHECK_USER_STATUS_URI);
+    }
+
+    public static function buildCheckTransactionStatusUri(string $version = self::VERSION_4): string
+    {
+        return str_replace('{version}', $version, self::CHECK_TRANSACTION_STATUS_URI);
     }
 }

@@ -9,6 +9,7 @@ use Ofload\Butn\Client as OfloadButnClient;
 use GuzzleHttp\Client as HttpClient;
 use Ofload\Butn\DTO\AccessTokenDTO;
 use Ofload\Butn\DTO\TransactionDTO;
+use Ofload\Butn\DTO\TransactionStatusDTO;
 use Ofload\Butn\DTO\UserDTO;
 use Ofload\Butn\DTO\UserStatusDTO;
 use Ofload\Butn\Exceptions\ButnServerException;
@@ -138,6 +139,39 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($response->getDescription());
         $this->assertNotEmpty($response->getFundingLimit());
         $this->assertNotEmpty($response->getAvailableFunding());
+    }
+
+    public function testItShouldGetTransactionStatus(): void
+    {
+        $transactionID = 'foo-bar';
+        $accessTokenDto = (new AccessTokenDTO())
+            ->fromArray(self::ACCESS_TOKEN_DATA);
+        $transactionStatus = (new TransactionStatusDTO())
+            ->setAggregatorId('test')
+            ->setTransactionId($transactionID);
+
+        $this->createSuccessResponseFrom([
+            'code' => 'foo',
+            'description' => 'bar',
+            'updated' => 'test',
+            'dueDate' => (new \DateTime())->format('YYYY-MM-DDTHH:mm:ss.sssZ'),
+            'amountFunded' => 111,
+            'fundingFee' => 111,
+            'establishmentFee' => 111,
+            'lateFees' => 111,
+            'adhocFees' => 111,
+        ]);
+
+        $response = $this->createButnClient()->checkTransactionStatus($transactionStatus, $accessTokenDto);
+
+        $this->assertNotEmpty($response->getCode());
+        $this->assertNotEmpty($response->getDescription());
+        $this->assertNotEmpty($response->getAdhocFees());
+        $this->assertNotEmpty($response->getAmountFunded());
+        $this->assertNotEmpty($response->getEstablishmentFee());
+        $this->assertNotEmpty($response->getLateFees());
+        $this->assertNotEmpty($response->getFundingFee());
+        $this->assertNotEmpty($response->getDueDate());
     }
 
     private function createButnClient(): OfloadButnClient
