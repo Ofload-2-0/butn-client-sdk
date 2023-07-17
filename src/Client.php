@@ -10,6 +10,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Ofload\Butn\Actions\CheckBorrowerStatusAction;
 use Ofload\Butn\Actions\RegisterUserAction;
+use Ofload\Butn\Actions\TransactionStatusAction;
+use Ofload\Butn\DTO\TransactionStatusDTO;
+use Ofload\Butn\DTO\TransactionStatusResponseDTO;
 use Ofload\Butn\DTO\UserDTO;
 use Ofload\Butn\DTO\UserResponseDTO;
 use Ofload\Butn\DTO\UserStatusDTO;
@@ -110,6 +113,22 @@ class Client
             $this->httpClient,
             $accessTokenDTO,
             $userStatusDTO
+        ))->execute();
+    }
+
+    /**
+     * @throws ButnServerException
+     */
+    public function checkTransactionStatus(TransactionStatusDTO $request, ?AccessTokenDTO $accessTokenDTO = null): TransactionStatusResponseDTO
+    {
+        if (is_null($accessTokenDTO)) {
+            $accessTokenDTO = $this->getAccessToken();
+        }
+
+        return (new TransactionStatusAction(
+            $this->httpClient,
+            $accessTokenDTO,
+            $request
         ))->execute();
     }
 
