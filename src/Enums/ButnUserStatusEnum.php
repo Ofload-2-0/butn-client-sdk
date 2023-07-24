@@ -4,7 +4,7 @@ namespace Ofload\Butn\Enums;
 
 enum ButnUserStatusEnum: string
 {
-    case PENDING = 'pending';
+    case PENDING = 'Pending';
     case PENDING_LOGIN_CREATED = 'Pending (Login Created)';
     case PASSED_ON_BOARDING_CHECKS = 'Passed Onboarding Checks';
     case REVIEW = 'Review';
