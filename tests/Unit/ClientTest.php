@@ -2,6 +2,8 @@
 
 namespace Unit;
 
+use DateTime;
+use DateTimeInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use http\Env\Request;
@@ -141,7 +143,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($response->getAvailableFunding());
     }
 
-    public function testItShouldGetTransactionStatus(): void
+    public function testItShouldGetTransactionStatusWithoutFundingDetails(): void
     {
         $transactionID = 'foo-bar';
         $accessTokenDto = (new AccessTokenDTO())
@@ -151,27 +153,48 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setTransactionId($transactionID);
 
         $this->createSuccessResponseFrom([
-            'code' => 'foo',
-            'description' => 'bar',
-            'updated' => 'test',
-            'dueDate' => (new \DateTime())->format('YYYY-MM-DDTHH:mm:ss.sssZ'),
-            'amountFunded' => 111,
-            'fundingFee' => 111,
-            'establishmentFee' => 111,
-            'lateFees' => 111,
-            'adhocFees' => 111,
+            'code' => 'Review',
+            'description' => 'Aggregator Setting - All new transactions are under review',
+            'updated' => '2023-07-21T02:35:25Z'
         ]);
 
         $response = $this->createButnClient()->checkTransactionStatus($transactionStatus, $accessTokenDto);
+        $this->assertEquals('Review', $response->getCode());
+        $this->assertEquals('Aggregator Setting - All new transactions are under review', $response->getDescription());
+        $this->assertEquals('2023-07-21T02:35:25+00:00', $response->getUpdated()->format(DateTimeInterface::ATOM));
+        $this->assertNull($response->getFundingFee());
+        $this->assertNull($response->getDueDate());
+        $this->assertNull($response->getAmountFunded());
+        $this->assertNull($response->getEstablishmentFee());
+        $this->assertNull($response->getLateFees());
+        $this->assertNull($response->getAdhocFees());
+    }
 
-        $this->assertNotEmpty($response->getCode());
-        $this->assertNotEmpty($response->getDescription());
-        $this->assertNotEmpty($response->getAdhocFees());
-        $this->assertNotEmpty($response->getAmountFunded());
-        $this->assertNotEmpty($response->getEstablishmentFee());
-        $this->assertNotEmpty($response->getLateFees());
-        $this->assertNotEmpty($response->getFundingFee());
-        $this->assertNotEmpty($response->getDueDate());
+    public function testItShouldGetTransactionStatusWithFundingDetails(): void
+    {
+        $transactionID = 'foo-bar';
+        $accessTokenDto = (new AccessTokenDTO())
+            ->fromArray(self::ACCESS_TOKEN_DATA);
+        $transactionStatus = (new TransactionStatusDTO())
+            ->setAggregatorId('test')
+            ->setTransactionId($transactionID);
+
+        $this->createSuccessResponseFrom([
+            "updated" => "2022-03-09T04:19:33Z",
+            "description" => "Transaction is currently active and is being serviced",
+            "fundingFee" => "19.22",
+            "dueDate" => "2022-04-08T00:00:00Z",
+            "amountFunded" => "1202.00",
+            "code" => "Active"
+        ]);
+
+        $response = $this->createButnClient()->checkTransactionStatus($transactionStatus, $accessTokenDto);
+        $this->assertEquals('Active', $response->getCode());
+        $this->assertEquals('Transaction is currently active and is being serviced', $response->getDescription());
+        $this->assertEquals('2022-03-09T04:19:33+00:00', $response->getUpdated()->format(DateTimeInterface::ATOM));
+        $this->assertEquals(19.22, $response->getFundingFee());
+        $this->assertEquals('2022-04-08T00:00:00+00:00', $response->getDueDate()->format(DateTimeInterface::ATOM));
+        $this->assertEquals(1202.00, $response->getAmountFunded());
     }
 
     private function createButnClient(): OfloadButnClient

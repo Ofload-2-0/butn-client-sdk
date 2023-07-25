@@ -7,7 +7,9 @@
     "prefer-stable": true,
     "require": {
         "php": ">=8.1",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "nesbot/carbon": "^2.68",
+        "netresearch/jsonmapper": "^4.2"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"

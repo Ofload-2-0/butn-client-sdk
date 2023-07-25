@@ -2,17 +2,22 @@
 
 namespace Ofload\Butn\DTO;
 
+use DateTime;
+use Exception;
+use JsonMapper;
+use JsonMapper_Exception;
+
 class TransactionStatusResponseDTO
 {
     private string $code;
     private string $description;
-    private string $updated;
-    private string $dueDate;
-    private string $amountFunded;
-    private string $fundingFee;
-    private string $establishmentFee;
-    private string $lateFees;
-    private string $adhocFees;
+    private DateTime $updated;
+    private ?DateTime $dueDate = null;
+    private ?float $amountFunded = null;
+    private ?float $fundingFee = null;
+    private ?float $establishmentFee = null;
+    private ?float $lateFees = null;
+    private ?float $adhocFees = null;
 
     public function getCode(): string
     {
@@ -36,29 +41,35 @@ class TransactionStatusResponseDTO
         return $this;
     }
 
-    public function getUpdated(): string
+    public function getUpdated(): DateTime
     {
         return $this->updated;
     }
 
+    /**
+     * @throws Exception
+     */
     public function setUpdated(string $updated): TransactionStatusResponseDTO
     {
-        $this->updated = $updated;
+        $this->updated = new DateTime($updated);
         return $this;
     }
 
-    public function getDueDate(): string
+    public function getDueDate(): ?DateTime
     {
         return $this->dueDate;
     }
 
+    /**
+     * @throws Exception
+     */
     public function setDueDate(string $dueDate): TransactionStatusResponseDTO
     {
-        $this->dueDate = $dueDate;
+        $this->dueDate = new DateTime($dueDate);
         return $this;
     }
 
-    public function getAmountFunded(): string
+    public function getAmountFunded(): ?float
     {
         return $this->amountFunded;
     }
@@ -69,7 +80,7 @@ class TransactionStatusResponseDTO
         return $this;
     }
 
-    public function getFundingFee(): string
+    public function getFundingFee(): ?float
     {
         return $this->fundingFee;
     }
@@ -80,7 +91,7 @@ class TransactionStatusResponseDTO
         return $this;
     }
 
-    public function getEstablishmentFee(): string
+    public function getEstablishmentFee(): ?float
     {
         return $this->establishmentFee;
     }
@@ -91,7 +102,7 @@ class TransactionStatusResponseDTO
         return $this;
     }
 
-    public function getLateFees(): string
+    public function getLateFees(): ?float
     {
         return $this->lateFees;
     }
@@ -102,7 +113,7 @@ class TransactionStatusResponseDTO
         return $this;
     }
 
-    public function getAdhocFees(): string
+    public function getAdhocFees(): ?float
     {
         return $this->adhocFees;
     }
@@ -113,17 +124,15 @@ class TransactionStatusResponseDTO
         return $this;
     }
 
-    public static function fromArray(array $data): static
+    /**
+     * @throws JsonMapper_Exception
+     */
+    public static function fromJson(object $json): static
     {
-        return (new static())
-            ->setCode($data['code'])
-            ->setDescription($data['description'])
-            ->setUpdated($data['updated'])
-            ->setDueDate($data['dueDate'])
-            ->setAmountFunded($data['amountFunded'])
-            ->setFundingFee($data['fundingFee'])
-            ->setEstablishmentFee($data['establishmentFee'])
-            ->setLateFees($data['lateFees'])
-            ->setAdhocFees($data['adhocFees']);
+        $mapper = new JsonMapper();
+        $mapper->bStrictNullTypes = false;
+        $mapper->bExceptionOnUndefinedProperty = false;
+
+        return $mapper->map($json, new static());
     }
 }
