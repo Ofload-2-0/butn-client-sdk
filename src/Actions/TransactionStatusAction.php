@@ -28,7 +28,7 @@ class TransactionStatusAction extends BaseAction
             $url = $this->accessToken->getInstanceUrl() . ApplicationConstants::buildCheckTransactionStatusUri();
 
             $response = $this->httpClient->get(
-                sprintf('%s?%', $url, $queryParams),
+                sprintf('%s?%s', $url, $queryParams),
                 [
                     RequestOptions::HEADERS => [
                         'Authorization' => 'Bearer ' . $this->accessToken->getToken(),
@@ -37,9 +37,9 @@ class TransactionStatusAction extends BaseAction
                 ]
             );
 
-            $payload = json_decode($response->getBody()->getContents(), true);
+            $payload = json_decode($response->getBody()->getContents());
 
-            return TransactionStatusResponseDTO::fromArray($payload);
+            return TransactionStatusResponseDTO::fromJson($payload);
         } catch (ClientException $exception) {
             $this->throwButnClientException($exception);
         } catch (GuzzleException $exception) {
