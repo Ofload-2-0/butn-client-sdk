@@ -65,7 +65,13 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $payloadId = 'FOO';
         $accessTokenDto = (new AccessTokenDTO())
             ->fromArray(self::ACCESS_TOKEN_DATA);
-        $transactionDto = new TransactionDTO();
+        $transactionDto = (new TransactionDTO())
+            ->setTransactionId('FOO BAR')
+            ->setAggregatorId('FOO')
+            ->setBorrowerExternalId('BAR')
+            ->setFactorFaceValue(1000)
+            ->setDebtorEmail('foo@bar.com')
+            ->setPotBase64BinaryStream('');
 
         $this->createSuccessResponseFrom(['payloadId' => $payloadId]);
 
@@ -85,7 +91,12 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $accessTokenDto = (new AccessTokenDTO())
             ->fromArray(self::ACCESS_TOKEN_DATA);
         $transactionDto = (new TransactionDTO())
-            ->setTransactionId($transactionId);
+            ->setTransactionId($transactionId)
+            ->setAggregatorId('FOO')
+            ->setBorrowerExternalId('BAR')
+            ->setFactorFaceValue(1000)
+            ->setDebtorEmail('foo@bar.com')
+            ->setPotBase64BinaryStream('');
 
         $this->createButnClient()->createTransaction($transactionDto, $accessTokenDto);
     }
