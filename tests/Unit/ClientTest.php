@@ -6,10 +6,14 @@ use DateTime;
 use DateTimeInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use http\Env\Request;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Ofload\Butn\Client as OfloadButnClient;
 use GuzzleHttp\Client as HttpClient;
 use Ofload\Butn\DTO\AccessTokenDTO;
+use Ofload\Butn\DTO\CounterPartyDTO;
 use Ofload\Butn\DTO\TransactionDTO;
 use Ofload\Butn\DTO\TransactionStatusDTO;
 use Ofload\Butn\DTO\UserDTO;
@@ -30,6 +34,8 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         'token_type' => 'TEST-TOKEN'
     ];
     private const OAUTH_TOKEN = 'test-token';
+    private const COUNTER_PARTY_ABN = '123456789';
+    private const COUNTER_PARTY_NAME = 'Acme Corp';
 
     private HttpClient $httpClient;
 
@@ -195,6 +201,57 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(19.22, $response->getFundingFee());
         $this->assertEquals('2022-04-08T00:00:00+00:00', $response->getDueDate()->format(DateTimeInterface::ATOM));
         $this->assertEquals(1202.00, $response->getAmountFunded());
+    }
+
+    public function dataProviderCounterParty(): \Generator
+    {
+        yield 'Without Counter Party' => [null];
+        yield 'Counter Party with only ABN' => [new CounterPartyDTO(self::COUNTER_PARTY_ABN)];
+        yield 'Counter Party with ABN and Name' => [(new CounterPartyDTO(self::COUNTER_PARTY_ABN))->setName(self::COUNTER_PARTY_NAME)];
+    }
+
+    /**
+     * @dataProvider dataProviderCounterParty
+     */
+    public function testShouldHaveCounterPartyInTransactionPayload($counterParty): void
+    {
+        $mockHandler = new MockHandler([
+            function (Request $request) use ($counterParty) {
+                $payload = json_decode($request->getBody()->getContents(), true);
+                if (is_null($counterParty)) {
+                    $this->assertArrayNotHasKey('counterParty', $payload);
+                    return new Response(200, [], json_encode(['payloadId' => 'FOO']));
+                }
+
+                $this->assertArrayHasKey('counterParty', $payload);
+                $this->assertEquals(self::COUNTER_PARTY_ABN, $payload['counterParty']['counterPartyABN']);
+
+                if (is_null($counterParty->getName())) {
+                    $this->assertArrayNotHasKey('counterPartyName', $payload['counterParty']);
+                    return new Response(200, [], json_encode(['payloadId' => 'FOO']));
+                }
+
+                $this->assertEquals(self::COUNTER_PARTY_NAME, $payload['counterParty']['counterPartyName']);
+                return new Response(200, [], json_encode(['payloadId' => 'FOO']));
+            }
+        ]);
+        $handler = HandlerStack::create($mockHandler);
+        $this->httpClient = new HttpClient(['handler' => $handler]);
+
+        $accessTokenDto = (new AccessTokenDTO())
+            ->fromArray(self::ACCESS_TOKEN_DATA);
+
+        $transactionDto = (new TransactionDTO())
+            ->setAggregatorId('test')
+            ->setTransactionId('invoice-id')
+            ->setBorrowerExternalId('borrower-id')
+            ->setButnProductType('Butn Pay')
+            ->setFactorFaceValue('100')
+            ->setDebtorEmail('debtor@example.com')
+            ->setPotBase64BinaryStream('pot-base64-binary-stream')
+            ->setCounterParty($counterParty);
+
+        $this->createButnClient()->createTransaction($transactionDto, $accessTokenDto);
     }
 
     private function createButnClient(): OfloadButnClient

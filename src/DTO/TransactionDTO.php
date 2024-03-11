@@ -29,6 +29,7 @@ class TransactionDTO implements JsonSerializable
     private ?InstallmentFrequency $installmentFrequency = null;
     private ?string $numberOfInstalments = null;
     private ?string $rateId = null;
+    private ?CounterPartyDTO $counterParty = null;
 
     public function getTransactionId(): string
     {
@@ -270,6 +271,18 @@ class TransactionDTO implements JsonSerializable
         return $this;
     }
 
+    public function setCounterParty(?CounterPartyDTO $counterParty): TransactionDTO
+    {
+        $this->counterParty = $counterParty;
+
+        return $this;
+    }
+
+    public function getCounterParty(): ?CounterPartyDTO
+    {
+        return $this->counterParty;
+    }
+
     public function jsonSerialize(): array
     {
         $data = [
@@ -332,6 +345,10 @@ class TransactionDTO implements JsonSerializable
 
         if ($this->getRateId()) {
             $data['rateId'] = $this->getRateId();
+        }
+
+        if ($this->getCounterParty()) {
+            $data['counterParty'] = $this->getCounterParty();
         }
 
         return $data;
