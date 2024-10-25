@@ -49,9 +49,9 @@ class TransactionStatusResponseDTO
     /**
      * @throws Exception
      */
-    public function setUpdated(string $updated): TransactionStatusResponseDTO
+    public function setUpdated(?string $updated): TransactionStatusResponseDTO
     {
-        $this->updated = new DateTime($updated);
+        $this->updated = $updated ? new DateTime($updated) : null;
         return $this;
     }
 
