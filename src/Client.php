@@ -46,7 +46,7 @@ class Client
                     RequestOptions::HEADERS => [
                         'Authorization' => 'Bearer ' . $accessToken->getToken(),
                     ],
-                    RequestOptions::JSON => $request
+                    RequestOptions::JSON => $request->jsonSerialize()
                 ]
             );
 
