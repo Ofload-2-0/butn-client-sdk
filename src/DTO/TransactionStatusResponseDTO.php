@@ -63,9 +63,9 @@ class TransactionStatusResponseDTO
     /**
      * @throws Exception
      */
-    public function setDueDate(string $dueDate): TransactionStatusResponseDTO
+    public function setDueDate(?string $dueDate): TransactionStatusResponseDTO
     {
-        $this->dueDate = new DateTime($dueDate);
+        $this->dueDate = $dueDate ? new DateTime($dueDate) : $dueDate;
         return $this;
     }
 
